@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+
 namespace MyBGList.Models
 {
-    [Table("Domains")]
-    public class Domain
+    [Table("Mechanics")]
+    public class Mechanic
     {
         [Key]
         [Required]
@@ -14,9 +15,9 @@ namespace MyBGList.Models
         public string Name { get; set; } = null!;
 
         [Required]
-        public DateTime CreateAt { get; set; }
+        public DateTime CreatedDate { get; set; }
 
         [Required]
-        public DateTime LastModifiedAt { get; set; }
+        public DateTime LastModifiedDate { get; set; }
     }
 }
