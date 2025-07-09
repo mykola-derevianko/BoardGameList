@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 namespace MyBGList.Models
@@ -42,5 +43,6 @@ namespace MyBGList.Models
 
         public ICollection<BoardGames_Domains>? BoardGames_Domains { get; set; }
         public ICollection<BoardGames_Mechanics>? BoardGames_Mechanics { get; set; }
+
     }
 }

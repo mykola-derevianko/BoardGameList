@@ -7,10 +7,13 @@ namespace MyBGList.Controllers
     public class BoardGamesController : ControllerBase
     {
         private readonly ILogger<BoardGamesController> _logger;
+        private readonly ApplicationDbContext _context;
 
-        public BoardGamesController(ILogger<BoardGamesController> logger)
+        public BoardGamesController(ApplicationDbContext context, ILogger<BoardGamesController> logger)
         {
+            _context = context;
             _logger = logger;
+
         }
 
         [HttpGet(Name = "GetBoardGames")]

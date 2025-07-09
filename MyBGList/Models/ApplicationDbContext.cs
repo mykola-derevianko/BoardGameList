@@ -34,7 +34,7 @@ namespace MyBGList.Models
             modelBuilder.Entity<BoardGames_Mechanics>()
                 .HasOne(bg => bg.BoardGame)
                 .WithMany(m => m.BoardGames_Mechanics)
-                .HasForeignKey(fk => fk.BoardGame)
+                .HasForeignKey(fk => fk.BoardGameId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 
@@ -44,7 +44,7 @@ namespace MyBGList.Models
                 .HasForeignKey(fk => fk.MechanicId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
-            
+
         }
 
         public DbSet<BoardGame> BoardGames { get; set; }
@@ -52,6 +52,6 @@ namespace MyBGList.Models
         public DbSet<Mechanic> Mechanics { get; set; }
         public DbSet<BoardGames_Domains> BoardGames_Domains { get; set; }
         public DbSet<BoardGames_Mechanics> BoardGames_Mechanics { get; set; }
-        
+
     }
 }
