@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyBGList.Models;
+using MyBGList.DTO;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Dynamic.Core;
 namespace MyBGList.Controllers
 {
     [Route("[controller]")]
@@ -18,34 +21,35 @@ namespace MyBGList.Controllers
 
         [HttpGet(Name = "GetBoardGames")]
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 60)]
-        public IEnumerable<BoardGame> Get()
+        public async Task<RestDTO<BoardGame[]>> Get(
+                int pageIndex = 0,
+                int pageSize = 10,
+                string? sortColumn = "Name",
+                string? sortOrder = "ASC",
+                string? filterQuery = null
+            )
         {
+            var query = _context.BoardGames.AsQueryable();
+            if (!string.IsNullOrEmpty(filterQuery))
+                query = query.Where(bg => bg.Name.Contains(filterQuery));
+            var recordCount = await query.CountAsync();
+            query = query
+                    .OrderBy($"{ sortColumn} { sortOrder}")
+                    .Skip(pageIndex * pageSize)
+                    .Take(pageSize);
             _logger.LogInformation("Getting all board games");
-            return new List<BoardGame>
+            return new RestDTO<BoardGame[]>()
             {
-                new BoardGame
+                Data = await query.ToArrayAsync(),
+                PageIndex = pageIndex,
+                PageSize = pageSize,
+                RecordCount = recordCount,
+                Links = new List<LinkDTO>
                 {
-                    Id = 1,
-                    Name = "Catan",
-                    Year = 1995,
-                    MinPlayers = 3,
-                    MaxPlayers = 4
-                },
-                new BoardGame
-                {
-                    Id = 2,
-                    Name = "Carcassonne",
-                    Year = 2000,
-                    MinPlayers = 2,
-                    MaxPlayers = 5
-                },
-                new BoardGame
-                {
-                    Id = 3,
-                    Name = "Ticket to Ride",
-                    Year = 2004,
-                    MinPlayers = 2,
-                    MaxPlayers = 5
+                    new LinkDTO(
+                        href: $"{Request.Scheme}://{Request.Host}/BoardGames?pageIndex={pageIndex}&pageSize={pageSize}",
+                        rel: "self",
+                        type: "GET")
                 }
             };
         }

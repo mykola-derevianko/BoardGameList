@@ -14,10 +14,10 @@ namespace MyBGList.Models
         public string Name { get; set; } = null!;
 
         [Required]
-        public DateTime CreateAt { get; set; }
+        public DateTime CreatedDate { get; set; }
 
         [Required]
-        public DateTime LastModifiedAt { get; set; }
+        public DateTime LastModifiedDate { get; set; }
 
         public ICollection<BoardGames_Domains>? BoardGames_Domains { get; set; }
     }
