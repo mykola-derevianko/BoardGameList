@@ -53,5 +53,61 @@ namespace MyBGList.Controllers
                 }
             };
         }
+
+
+        [HttpPost(Name = "GetBoardGames")]
+        [ResponseCache(NoStore = true)]
+        public async Task<RestDTO<BoardGame?>> Post(BoardGameDTO model) 
+        {
+            var boardGame = await _context.BoardGames
+                .Where(bg => bg.Id == model.Id)
+                .FirstOrDefaultAsync();
+
+            if(boardGame != null)
+            {
+                if (!string.IsNullOrEmpty(model.Name))
+                    boardGame.Name = model.Name;
+                if (model.Year.HasValue && model.Year > 0)
+                    boardGame.Year = model.Year.Value;
+                boardGame.LastModifiedDate = DateTime.UtcNow;
+                _context.BoardGames.Update(boardGame);
+                await _context.SaveChangesAsync();
+            }
+            return new RestDTO<BoardGame?>()
+            {
+                Data = boardGame,
+                Links = new List<LinkDTO>{
+                    new LinkDTO(
+                        href: $"{Request.Scheme}://{Request.Host}/BoardGames?{model}",
+                        rel: "self",
+                        type: "POST"
+                    )
+                }
+            };
+        }
+
+        [HttpDelete]
+        [ResponseCache(NoStore = true)]
+        public async Task<RestDTO<BoardGame?>> Delete( int id)
+        {
+            var boardGame = await _context.BoardGames
+                .FirstOrDefaultAsync(bg => bg.Id == id);
+            if(boardGame != null)
+            {
+                _context.BoardGames.Remove(boardGame);
+                await _context.SaveChangesAsync();
+            }
+            return new RestDTO<BoardGame?>()
+            {
+                Data = boardGame,
+                Links = new List<LinkDTO>{
+                    new LinkDTO(
+                        href: $"{Request.Scheme}://{Request.Host}/BoardGames?{id}",
+                        rel: "self",
+                        type: "DELETE"
+                    )
+                }
+            };
+        }
     }
 }
